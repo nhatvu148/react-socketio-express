@@ -22,14 +22,18 @@ io.on("connect", socket => {
 
     socket.join(user.room);
 
+    // send to one user who just joined
     socket.emit("message", {
       user: "admin",
       text: `${user.name}, welcome to room ${user.room}.`
     });
+
+    // send to all except the one
     socket.broadcast
       .to(user.room)
       .emit("message", { user: "admin", text: `${user.name} has joined!` });
 
+    // send to everyone
     io.to(user.room).emit("roomData", {
       room: user.room,
       users: getUsersInRoom(user.room)
